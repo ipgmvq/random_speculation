@@ -31,7 +31,7 @@ int main()
         if(cumulStep < 0.0) ++belowZero;
         cumul += cumulStep;
     }
-    printf("Speculator's wealth grew by %.2f times with %.2f:1 leverage\nThe probability of speculator's being non-profitable is %.2f%%\n", exp(cumul/CYCLES), LEVERAGE, 100.0 * ((double) belowZero)/((double) CYCLES));
+    printf("Speculator's wealth grew by %.2f times with %.2f:1 leverage\nThe probability of speculator's being non-profitable is %.2f%%\n", exp(cumul/CYCLES), LEVERAGE - 1.0, 100.0 * ((double) belowZero)/((double) CYCLES));
     return 0;
 }
 
