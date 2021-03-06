@@ -20,14 +20,14 @@ int main()
     while(fscanf(handle, "%lf\n", &closePrices[i])!=EOF && ++i < MAX_NUMBER);
     fclose(handle);
     for(int n = i-1; n; --n)
-        percentClosePrices[n] = closePrices[n] / closePrices[n-1] - 1.0;
+        percentClosePrices[n] = log((closePrices[n] / closePrices[n-1] - 1.0) * LEVERAGE + 1.0);
     printf("Investor's wealth grew by %.2f times\n", closePrices[i-1]/closePrices[0]);
     for(int cycle = 0; cycle < CYCLES; ++cycle) 
     {
         cumulStep = 0.0;
         for(int j = 1; j < i; ++j)
             if(rand() % 2)
-                cumulStep += log(percentClosePrices[j] * LEVERAGE + 1.0);
+                cumulStep += percentClosePrices[j];
         if(cumulStep < 0.0) ++belowZero;
         cumul += cumulStep;
     }
