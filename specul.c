@@ -12,27 +12,22 @@ int main()
 {
     srand(time(NULL));
     int i = 0, belowZero = 0;
-    double tempStep, cumul = 0.0, cumulStep = 0.0;
+    double cumul = 0.0, cumulStep = 0.0;
     double closePrices[MAX_NUMBER];
-    double logClosePrices[MAX_NUMBER];
+    double percentClosePrices[MAX_NUMBER];
     FILE * handle = fopen(PATH, "r");
     if (handle == NULL) exit(1);
-    while(fscanf(handle, "%lf\n", &closePrices[i])!=EOF)
-    {
-        logClosePrices[i] = log(closePrices[i]);
-        if(++i >= MAX_NUMBER) break;
-    }
+    while(fscanf(handle, "%lf\n", &closePrices[i])!=EOF && ++i < MAX_NUMBER);
     fclose(handle);
+    for(int n = i-1; n; --n)
+        percentClosePrices[n] = closePrices[n] / closePrices[n-1] - 1.0;
     printf("Investor's wealth grew by %.2f times\n", closePrices[i-1]/closePrices[0]);
     for(int cycle = 0; cycle < CYCLES; ++cycle) 
     {
         cumulStep = 0.0;
         for(int j = 1; j < i; ++j)
-        {
-            tempStep = (logClosePrices[j] - logClosePrices[j-1]) * ((double) (rand() % 2) );
-            tempStep = log((exp(tempStep) - 1.0) * LEVERAGE + 1.0);
-            cumulStep += tempStep;
-        }
+            if(rand() % 2)
+                cumulStep += log(percentClosePrices[j] * LEVERAGE + 1.0);
         if(cumulStep < 0.0) ++belowZero;
         cumul += cumulStep;
     }
